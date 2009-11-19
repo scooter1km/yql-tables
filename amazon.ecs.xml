@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns="http://query.yahooapis.com/v1/schema/table.xsd" https="true">
+  <meta>
+    <author>Matt Davis</author>
+    <documentationURL>http://docs.amazonwebservices.com/AWSECommerceService</documentationURL>
+  </meta>
+  <bindings>
+    <select itemPath="" produces="XML" >
+      <urls>
+        <url env="all">http://webservices.amazon.com/onca/xml?Service=AWSECommerceService</url>
+      </urls>
+      <paging model="offset">
+        <start id="start_index" default="0" />
+        <pagesize id="max_results" max="100" />
+        <total default="10" />
+      </paging>
+      <inputs>
+        <key id="Operation" type="xs:string" paramType="query" required="false"
+             default="ItemSearch"/>
+        <key id="Keywords" type="xs:string" paramType="query" required="true"/>
+        <key id="SearchIndex" type="xs:string" paramType="query" required="true"/>
+        <key id="AWSAccessKeyId" type="xs:string" paramType="query" required="true"/>
+        <key id="awsSecretKey" type="xs:string" paramType="variable" required="true"/>
+      </inputs>
+      <execute><![CDATA[
+// Include the SHA helper
+y.include("http://github.com/scooter1km/yql-tables/blob/master/sha2.js");
+
+// Collect all the parameters
+var unsignedUrl = request.url;
+var lines = unsignedUrl.split("\n");
+unsignedUrl = "";
+for (var i in lines) { unsignedUrl += lines[i]; }
+
+// find host and query portions
+var urlregex = new RegExp("^http:\\/\\/(.*)\\/onca\\/xml\\?(.*)$");
+var matches = urlregex.exec(unsignedUrl);
+
+if (matches == null) {
+  alert("Could not find PA-API end-point in the URL. Please ensure the URL looks like the example provided.");
+  return;
+}
+
+var host = matches[1].toLowerCase();
+var query = matches[2];
+
+// split the query into its constituent parts
+var pairs = query.split("&");
+var time = new Date();
+var gmtTime = new Date(time.getTime() + (time.getTimezoneOffset() * 60000));
+pairs.push("Timestamp=" + gmtTime.toISODate());
+
+
+
+try {
+   // get the content from service along with the OAuth header, and return the result back out
+   response.object = request.contentType('application/xml').header("Authorization", OAuth.getAuthorizationHeader("netflix.com", message.parameters)).get().response;
+} catch(err) {
+   response.object = {'result':'failure', 'error': err};
+}
+          ]]>
+      </execute>
+    </select>
+  </bindings>
+</table>
