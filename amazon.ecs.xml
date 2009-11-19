@@ -24,8 +24,8 @@
       </inputs>
       <execute><![CDATA[
 // Include the SHA helper
-y.include("http://github.com/scooter1km/yql-tables/blob/master/sha2.js");
-y.include("http://github.com/scooter1km/yql-tables/blob/master/aws_helper.js");
+y.include("http://github.com/scooter1km/yql-tables/raw/master/sha2.js");
+y.include("http://github.com/scooter1km/yql-tables/raw/master/aws_helper.js");
 
 var signedUrl = sign_aws_url(request.url, awsSecretKey);
 
