@@ -31,7 +31,7 @@ var signedUrl = sign_aws_url(request.url, awsSecretKey);
 
 try {
    // get the content from service
-   response.object = y.rest(signedUrl).get().response;
+   response.object = y.rest(signedUrl).contentType('application/xml').get().response;
 } catch(err) {
    response.object = {'result':'failure', 'error': err};
 }
