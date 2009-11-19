@@ -27,11 +27,13 @@
 y.include("http://github.com/scooter1km/yql-tables/raw/master/sha2.js");
 y.include("http://github.com/scooter1km/yql-tables/raw/master/aws_helper.js");
 
+y.log(request.url);
 var signedUrl = sign_aws_url(request.url, awsSecretKey);
-
+y.log(signedUrl);
 try {
    // get the content from service
-   response.object = y.rest(signedUrl).contentType('application/xml').get().response;
+   var signedResp = y.rest(signedUrl).contentType('application/xml').get().response;
+   response.object = signedResp
 } catch(err) {
    response.object = {'result':'failure', 'error': err};
 }
