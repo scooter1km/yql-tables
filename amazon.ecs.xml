@@ -17,6 +17,8 @@
       <inputs>
         <key id="Operation" type="xs:string" paramType="query" required="false"
              default="ItemSearch"/>
+        <key id="ResponseGroup"  type="xs:string" paramType="query" required="false"
+             default="Medium"/>
         <key id="Keywords" type="xs:string" paramType="query" required="true"/>
         <key id="SearchIndex" type="xs:string" paramType="query" required="true"/>
         <key id="AWSAccessKeyId" type="xs:string" paramType="query" required="true"/>
