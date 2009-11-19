@@ -25,36 +25,13 @@
       <execute><![CDATA[
 // Include the SHA helper
 y.include("http://github.com/scooter1km/yql-tables/blob/master/sha2.js");
+y.include("http://github.com/scooter1km/yql-tables/blob/master/aws_helper.js");
 
-// Collect all the parameters
-var unsignedUrl = request.url;
-var lines = unsignedUrl.split("\n");
-unsignedUrl = "";
-for (var i in lines) { unsignedUrl += lines[i]; }
-
-// find host and query portions
-var urlregex = new RegExp("^http:\\/\\/(.*)\\/onca\\/xml\\?(.*)$");
-var matches = urlregex.exec(unsignedUrl);
-
-if (matches == null) {
-  alert("Could not find PA-API end-point in the URL. Please ensure the URL looks like the example provided.");
-  return;
-}
-
-var host = matches[1].toLowerCase();
-var query = matches[2];
-
-// split the query into its constituent parts
-var pairs = query.split("&");
-var time = new Date();
-var gmtTime = new Date(time.getTime() + (time.getTimezoneOffset() * 60000));
-pairs.push("Timestamp=" + gmtTime.toISODate());
-
-
+var signedUrl = sign_aws_url(request.url, awsSecretKey);
 
 try {
-   // get the content from service along with the OAuth header, and return the result back out
-   response.object = request.contentType('application/xml').header("Authorization", OAuth.getAuthorizationHeader("netflix.com", message.parameters)).get().response;
+   // get the content from service
+   response.object = y.rest(signedUrl).get().response;
 } catch(err) {
    response.object = {'result':'failure', 'error': err};
 }

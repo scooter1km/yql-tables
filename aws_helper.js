@@ -2,7 +2,7 @@
  * Mostly stolen
  */
 
-function sign_aws_url(url, id, secret) {
+function sign_aws_url(url, secret) {
     var unsignedUrl = url;
     var lines = unsignedUrl.split("\n");
     unsignedUrl = "";
@@ -39,7 +39,6 @@ function sign_aws_url(url, id, secret) {
     var stringToSign = "GET\n" + host + "\n/onca/xml\n" + canonicalQuery;
 
     // calculate the signature
-    var secret = getSecretAccessKey();
     var signature = sign(secret, stringToSign);
         
     // assemble the signed url
@@ -81,8 +80,6 @@ function encodeNameValuePairs(pairs) {
       
 function cleanupRequest(pairs) {
     var haveTimestamp = false;
-    var haveAwsId = false;
-    var accessKeyId =  getAccessKeyId();
         
     var nPairs = pairs.length;
     var i = 0;
@@ -90,9 +87,6 @@ function cleanupRequest(pairs) {
         var p = pairs[i];
         if (p.search(/^Timestamp=/) != -1) {
             haveTimestamp = true;
-        } else if (p.search(/^(AWSAccessKeyId|SubscriptionId)=/) != -1) {
-            pairs.splice(i, 1, "AWSAccessKeyId=" + accessKeyId);
-	    haveAwsId = true;
         } else if (p.search(/^Signature=/) != -1) {
             pairs.splice(i, 1);
             i--;
@@ -105,9 +99,6 @@ function cleanupRequest(pairs) {
         pairs.push("Timestamp=" + getNowTimeStamp());
     }
 
-    if (!haveAwsId) {
-        pairs.push("AWSAccessKeyId=" + accessKeyId);
-    }
     return pairs;
 }
       
