@@ -17,7 +17,6 @@
       <inputs>
         <key id="Operation" type="xs:string" paramType="query" required="false" default="ItemLookup"/>
         <key id="ItemId" type="xs:string" paramType="query" required="true"/>
-        <key id="SearchIndex" type="xs:string" paramType="query" required="true"/>
         <key id="MerchantId" type="xs:string" paramType="query" required="false" default="Amazon"/>
         <key id="ResponseGroup"  type="xs:string" paramType="query" required="false"
              default="Medium"/>
