@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns="http://query.yahooapis.com/v1/schema/table.xsd">
+  <meta>
+    <author>Matt Davis</author>
+    <documentationURL>http://docs.amazonwebservices.com/AWSECommerceService</documentationURL>
+  </meta>
+  <bindings>
+    <select itemPath="" produces="XML" >
+      <urls>
+        <url env="all">http://webservices.amazon.com/onca/xml?Service=AWSECommerceService</url>
+      </urls>
+      <paging model="offset">
+        <start id="start_index" default="0" />
+        <pagesize id="max_results" max="100" />
+        <total default="10" />
+      </paging>
+      <inputs>
+        <key id="AWSAccessKeyId" type="xs:string" paramType="query" required="true"/>
+        <key id="awsSecretKey" type="xs:string" paramType="variable" required="true"/>
+        <key id="Operation" type="xs:string" paramType="query" required="false" default="ItemLookup"/>
+        <key id="ItemId" type="xs:string" paramType="query" required="true"/>
+        <key id="SearchIndex" type="xs:string" paramType="query" required="true"/>
+        <key id="MerchantId" type="xs:string" paramType="query" required="false" default="Amazon"/>
+        <key id="ResponseGroup"  type="xs:string" paramType="query" required="false"
+             default="Medium"/>
+      </inputs>
+      <execute><![CDATA[
+// Include the SHA helper
+y.include("http://github.com/scooter1km/yql-tables/raw/master/sha2.js");
+y.include("http://github.com/scooter1km/yql-tables/raw/master/aws_helper.js");
+
+y.log(request.url);
+var signedUrl = sign_aws_url(request.url, awsSecretKey);
+y.log(signedUrl);
+try {
+   // get the content from service
+   var signedResp = y.rest(signedUrl).contentType('application/xml').get().response;
+   response.object = signedResp
+} catch(err) {
+   response.object = {'result':'failure', 'error': err};
+}
+          ]]>
+      </execute>
+    </select>
+  </bindings>
+</table>
