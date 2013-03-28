@@ -20,6 +20,7 @@
         <key id="MerchantId" type="xs:string" paramType="query" required="false" default="Amazon"/>
         <key id="ResponseGroup"  type="xs:string" paramType="query" required="false"
              default="Medium"/>
+        <key id="AssociateTag" type="xs:string" paramType="query" required="true"/>
         <key id="AWSAccessKeyId" type="xs:string" paramType="query" required="true"/>
         <key id="awsSecretKey" type="xs:string" paramType="variable" required="true"/>
       </inputs>
